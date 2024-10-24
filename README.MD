@@ -1,4 +1,4 @@
-# Proyecto: Seguidor de Línea con Arduino Nano
+# Seguidor de Línea con Arduino Nano
 
 Este proyecto implementa un robot seguidor de línea utilizando un Arduino Nano y diversas librerías para controlar sensores y motores.
 
@@ -57,25 +57,56 @@ Puedes instalar estas librerías directamente desde el gestor de bibliotecas del
 2. **Seguir la línea**:
    - Presiona el botón **BTN2** para comenzar la rutina de seguimiento de línea. El robot esperará 3 segundos y luego comenzará a seguir la línea negra automáticamente.
 
-## Ajuste de Constantes del Algoritmo PID
+## Ajuste de las Constantes del Algoritmo PID
 
-El ajuste de las constantes **Kp**, **Ki** y **Kd** del algoritmo PID es crucial para garantizar un comportamiento estable y preciso del robot seguidor de línea. Aquí te presento un método sencillo para ajustar estas constantes:
+El ajuste de las constantes **Kp**, **Ki** y **Kd** del algoritmo PID es crucial para garantizar un comportamiento estable y preciso del robot seguidor de línea. A continuación se describe cómo ajustar estas constantes paso a paso:
 
-1. **Ajuste del Kp (Proporcional)**:
-   - Comienza aumentando **Kp** desde un valor bajo hasta que el robot siga la línea, pero con ligeras oscilaciones.
-   - Si el valor es demasiado alto, el robot oscilará mucho; si es muy bajo, no corregirá lo suficientemente rápido.
+### Paso 1: Entender qué hace cada constante del PID
 
-2. **Ajuste del Ki (Integral)**:
-   - Establece **Ki** en 0 al principio.
-   - Una vez que tengas un valor **Kp** razonable, ajusta **Ki** ligeramente para corregir cualquier error acumulado (por ejemplo, si el robot se desvía gradualmente).
-   - Si el valor de **Ki** es demasiado alto, puede causar inestabilidad y oscilaciones más grandes.
+- **Kp (Proporcional)**: Controla la respuesta rápida del carrito. Si este valor es demasiado bajo, el robot reaccionará lentamente. Si es muy alto, el robot puede oscilar mucho alrededor de la línea.
+- **Ki (Integral)**: Corrige el error acumulado con el tiempo. Si hay un pequeño error constante, este valor lo corregirá. Sin embargo, un valor de Ki demasiado alto hará que el sistema se vuelva inestable.
+- **Kd (Derivativo)**: Reduce las oscilaciones. Un valor adecuado de Kd suaviza las correcciones, evitando que el robot "rebote" mientras sigue la línea.
 
-3. **Ajuste del Kd (Derivativo)**:
-   - Después de ajustar **Kp** y **Ki**, comienza a aumentar **Kd** para reducir las oscilaciones.
-   - **Kd** ayuda a amortiguar el sistema, permitiendo que las correcciones sean suaves en lugar de bruscas.
-   - Ajusta **Kd** hasta que las oscilaciones se minimicen sin sacrificar la capacidad de respuesta.
+### Paso 2: Ajustar Kp (Proporcional)
 
-Este proceso se conoce como **método de prueba y error** y es el más común para ajustar las constantes PID en proyectos de este tipo.
+1. Comienza con **Ki = 0** y **Kd = 0** para simplificar el control solo al término proporcional.
+2. Prueba con un valor bajo de **Kp**, como **0.1**.
+3. Si el carrito no sigue bien la línea o se desvía demasiado, incrementa **Kp** poco a poco (0.1 por vez).
+4. Continúa subiendo **Kp** hasta que el carrito siga la línea con ligeras oscilaciones. Si el valor de **Kp** es muy alto, el carrito oscilará rápidamente de un lado a otro. Si esto ocurre, baja el valor de **Kp**.
+
+### Paso 3: Ajustar Kd (Derivativo)
+
+1. Mantén el valor de **Kp** que encontraste en el paso anterior y deja **Ki = 0**.
+2. Comienza a aumentar **Kd**, probando con un valor pequeño, como **0.05**.
+3. **Kd** ayuda a amortiguar las oscilaciones. Si el carrito oscila mucho, incrementa **Kd** lentamente.
+4. Ajusta **Kd** hasta que las oscilaciones se reduzcan considerablemente. Si **Kd** es demasiado alto, el carrito será lento para reaccionar a los cambios en la línea, en ese caso, reduce **Kd**.
+
+### Paso 4: Ajustar Ki (Integral)
+
+1. Ajusta **Ki** solo si el carrito sigue la línea pero no se mantiene centrado.
+2. Si el carrito tiende a desviarse lentamente de la línea, es probable que necesites ajustar **Ki**.
+3. Aumenta **Ki** en pequeñas cantidades, como **0.01**.
+4. Ajusta **Ki** hasta que el carrito siga la línea sin desviarse con el tiempo. Un valor de **Ki** muy alto puede causar inestabilidad, así que procede con precaución.
+
+### Paso 5: Ajuste Fino y Pruebas
+
+1. Una vez que tengas valores razonables para **Kp**, **Ki**, y **Kd**, realiza ajustes pequeños a cada constante para afinar la respuesta del carrito.
+2. Prueba el carrito en diferentes condiciones (curvas, tramos rectos, etc.) para asegurarte de que funcione bien en todas las situaciones.
+
+### Ejemplo de Valores PID
+
+A continuación se muestra un ejemplo de valores PID típicos para un robot seguidor de línea. Estos valores pueden variar según tu configuración específica:
+
+- **Kp** = 0.2
+- **Ki** = 0.01
+- **Kd** = 0.1
+
+### Resumen de Pasos:
+
+1. Establece **Ki = 0**, **Kd = 0** y ajusta **Kp** hasta obtener un seguimiento con pequeñas oscilaciones.
+2. Ajusta **Kd** para reducir las oscilaciones.
+3. Ajusta **Ki** solo si el carrito no se mantiene centrado en la línea.
+4. Realiza ajustes finos para optimizar el comportamiento del carrito.
 
 ## Explicación de Funciones
 
